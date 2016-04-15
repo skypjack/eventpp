@@ -56,11 +56,14 @@ bus.publish<EventB>();
 bus.publish<EventC>();
 ```
 
-that's all.
+And that's all.
 
 ## Motivation
 
-Uhm... Well, I was experimenting. What else?
+Uhm... Well, I was experimenting. What else?<br/>
+I needed a minimal *event bus* for my applications, something easy to use and
+with a bunch of features like auto disconnection support for the listeners and
+auto registration of the member methods.
 
 ## Installation
 
