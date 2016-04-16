@@ -41,7 +41,7 @@ protected:
 
     template<class C>
     auto reg(details::Choice<S-(sizeof...(O)+1), S>, std::weak_ptr<C> ptr)
-        -> decltype(std::declval<C>().receive(std::declval<E>())) {
+    -> decltype(std::declval<C>().receive(std::declval<E>())) {
         signal.template add<C, &C::receive>(ptr);
         Base::reg(details::Choice<S-sizeof...(O), S>{}, ptr);
     }
