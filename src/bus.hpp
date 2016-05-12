@@ -116,7 +116,7 @@ public:
     }
 
     template<class E, class C, void(C::*M)(const E &) = &C::receive, template<typename> class P>
-    std::enable_if_t<std::is_convertible<P<C>, std::weak_ptr<C>>::value, void>
+    std::enable_if_t<std::is_convertible<P<C>, std::weak_ptr<C>>::value>
     add(P<C> &ptr) {
         Signal<E> &signal = Base::get(details::ETag<E>{});
         auto wptr = static_cast<std::weak_ptr<C>>(ptr);
@@ -130,7 +130,7 @@ public:
     }
 
     template<class E, class C, void(C::*M)(const E &) = &C::receive, template<typename> class P>
-    std::enable_if_t<std::is_convertible<P<C>, std::weak_ptr<C>>::value, void>
+    std::enable_if_t<std::is_convertible<P<C>, std::weak_ptr<C>>::value>
     remove(P<C> &ptr) {
         Signal<E> &signal = Base::get(details::ETag<E>{});
         auto wptr = static_cast<std::weak_ptr<C>>(ptr);
