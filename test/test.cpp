@@ -94,7 +94,7 @@ TEST(TEST_CASE_LABEL, ADD_REMOVE_EMIT) {
     ASSERT_EQ(listener->B, 0);
 }
 
-TEST(TEST_CASE_LABEL, REG_EMIT) {
+TEST(TEST_CASE_LABEL, REG_UNREG_EMIT) {
     std::shared_ptr<MyListener> listener = std::make_shared<MyListener>();
     MyBus bus{};
 
@@ -119,6 +119,18 @@ TEST(TEST_CASE_LABEL, REG_EMIT) {
     ASSERT_EQ(listener->A, 1);
     ASSERT_EQ(listener->B, 0);
     ASSERT_EQ(listener->C, 1);
+
+    bus.unreg(listener);
+
+    listener->reset();
+    bus.publish<EventA>(40, 2);
+    bus.publish<EventB>();
+    bus.publish<EventC>();
+
+    ASSERT_EQ(bus.size(), (decltype(bus.size()))0);
+    ASSERT_EQ(listener->A, 0);
+    ASSERT_EQ(listener->B, 0);
+    ASSERT_EQ(listener->C, 0);
 }
 
 TEST(TEST_CASE_LABEL, EXPIRED_LISTENERS) {

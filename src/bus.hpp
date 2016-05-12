@@ -34,6 +34,7 @@ class BusBase<S, E, O...>: public BusBase<S, O...> {
 protected:
     using Base::get;
     using Base::reg;
+    using Base::unreg;
 
     Signal<E>& get(details::ETag<E>) {
         return signal;
@@ -44,6 +45,13 @@ protected:
     -> decltype(std::declval<C>().receive(std::declval<E>())) {
         signal.template add<C, &C::receive>(ptr);
         Base::reg(details::Choice<S-sizeof...(O), S>{}, ptr);
+    }
+
+    template<class C>
+    auto unreg(details::Choice<S-(sizeof...(O)+1), S>, std::weak_ptr<C> ptr)
+    -> decltype(std::declval<C>().receive(std::declval<E>())) {
+        signal.template remove<C, &C::receive>(ptr);
+        Base::unreg(details::Choice<S-sizeof...(O), S>{}, ptr);
     }
 
     std::size_t size() const noexcept {
@@ -60,6 +68,7 @@ protected:
     virtual ~BusBase() { }
     void get();
     void reg(details::Choice<S, S>, std::weak_ptr<void>) { }
+    void unreg(details::Choice<S, S>, std::weak_ptr<void>) { }
     std::size_t size() const noexcept { return 0; }
 };
 
@@ -70,17 +79,24 @@ class Bus: public BusBase<sizeof...(T), T...> {
 public:
     using Base::size;
 
-    template<class E, void(*F)(const E &)>
-    void add() {
-        Signal<E> &signal = Base::get(details::ETag<E>{});
-        signal.template add<F>();
-    }
-
     template<class C, template<typename> class P>
     typename std::enable_if<std::is_convertible<P<C>, std::weak_ptr<C>>::value, void>::type
     reg(P<C> &ptr) {
         auto wptr = static_cast<std::weak_ptr<C>>(ptr);
         Base::reg(details::Choice<0, sizeof...(T)>{}, wptr);
+    }
+
+    template<class C, template<typename> class P>
+    typename std::enable_if<std::is_convertible<P<C>, std::weak_ptr<C>>::value, void>::type
+    unreg(P<C> &ptr) {
+        auto wptr = static_cast<std::weak_ptr<C>>(ptr);
+        Base::unreg(details::Choice<0, sizeof...(T)>{}, wptr);
+    }
+
+    template<class E, void(*F)(const E &)>
+    void add() {
+        Signal<E> &signal = Base::get(details::ETag<E>{});
+        signal.template add<F>();
     }
 
     template<class E, class C, void(C::*M)(const E &) = &C::receive, template<typename> class P>
