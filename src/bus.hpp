@@ -57,14 +57,14 @@ protected:
     }
 
     template<class C>
-    std::enable_if_t<details::HasReceiveMemberValue<C, E>, void>
+    std::enable_if_t<details::HasReceiveMemberValue<C, E>>
     reg(details::Choice<S-(sizeof...(O)+1), S>, std::weak_ptr<C> ptr) {
         signal.template add<C, &C::receive>(ptr);
         Base::reg(details::Choice<S-sizeof...(O), S>{}, ptr);
     }
 
     template<class C>
-    std::enable_if_t<details::HasReceiveMemberValue<C, E>, void>
+    std::enable_if_t<details::HasReceiveMemberValue<C, E>>
     unreg(details::Choice<S-(sizeof...(O)+1), S>, std::weak_ptr<C> ptr) {
         signal.template remove<C, &C::receive>(ptr);
         Base::unreg(details::Choice<S-sizeof...(O), S>{}, ptr);
@@ -96,14 +96,14 @@ public:
     using Base::size;
 
     template<class C, template<typename> class P>
-    typename std::enable_if<std::is_convertible<P<C>, std::weak_ptr<C>>::value, void>::type
+    std::enable_if_t<std::is_convertible<P<C>, std::weak_ptr<C>>::value>
     reg(P<C> &ptr) {
         auto wptr = static_cast<std::weak_ptr<C>>(ptr);
         Base::reg(details::Choice<0, sizeof...(T)>{}, wptr);
     }
 
     template<class C, template<typename> class P>
-    typename std::enable_if<std::is_convertible<P<C>, std::weak_ptr<C>>::value, void>::type
+    std::enable_if_t<std::is_convertible<P<C>, std::weak_ptr<C>>::value>
     unreg(P<C> &ptr) {
         auto wptr = static_cast<std::weak_ptr<C>>(ptr);
         Base::unreg(details::Choice<0, sizeof...(T)>{}, wptr);
@@ -116,7 +116,7 @@ public:
     }
 
     template<class E, class C, void(C::*M)(const E &) = &C::receive, template<typename> class P>
-    typename std::enable_if<std::is_convertible<P<C>, std::weak_ptr<C>>::value, void>::type
+    std::enable_if_t<std::is_convertible<P<C>, std::weak_ptr<C>>::value, void>
     add(P<C> &ptr) {
         Signal<E> &signal = Base::get(details::ETag<E>{});
         auto wptr = static_cast<std::weak_ptr<C>>(ptr);
@@ -130,7 +130,7 @@ public:
     }
 
     template<class E, class C, void(C::*M)(const E &) = &C::receive, template<typename> class P>
-    typename std::enable_if<std::is_convertible<P<C>, std::weak_ptr<C>>::value, void>::type
+    std::enable_if_t<std::is_convertible<P<C>, std::weak_ptr<C>>::value, void>
     remove(P<C> &ptr) {
         Signal<E> &signal = Base::get(details::ETag<E>{});
         auto wptr = static_cast<std::weak_ptr<C>>(ptr);
