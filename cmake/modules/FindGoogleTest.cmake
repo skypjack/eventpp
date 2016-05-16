@@ -29,25 +29,25 @@ find_path(
 
 find_library(
     GOOGLETEST_LIBRARY NAMES gtest
-    HINTS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/gtest/
+    PATHS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/gtest/
     NO_DEFAULT_PATH
 )
 
 find_library(
     GOOGLETEST_MAIN_LIBRARY NAMES gtest_main
-    HINTS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/gtest/
+    PATHS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/gtest/
     NO_DEFAULT_PATH
 )
 
 find_library(
     GOOGLEMOCK_LIBRARY NAMES gmock
-    HINTS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/
+    PATHS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/
     NO_DEFAULT_PATH
 )
 
 find_library(
     GOOGLEMOCK_MAIN_LIBRARY NAMES gmock_main
-    HINTS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/
+    PATHS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/
     NO_DEFAULT_PATH
 )
 
