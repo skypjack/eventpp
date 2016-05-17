@@ -96,13 +96,13 @@ public:
     using Base::size;
 
     template<class C>
-    void reg(std::shared_ptr<C> ptr) {
+    void reg(std::shared_ptr<C> &ptr) {
         auto wptr = static_cast<std::weak_ptr<C>>(ptr);
         Base::reg(details::Choice<0, sizeof...(T)>{}, wptr);
     }
 
     template<class C>
-    void unreg(std::shared_ptr<C> ptr) {
+    void unreg(std::shared_ptr<C> &ptr) {
         auto wptr = static_cast<std::weak_ptr<C>>(ptr);
         Base::unreg(details::Choice<0, sizeof...(T)>{}, wptr);
     }
@@ -114,7 +114,7 @@ public:
     }
 
     template<class E, class C, void(C::*M)(const E &) = &C::receive>
-    void add(std::shared_ptr<C> ptr) {
+    void add(std::shared_ptr<C> &ptr) {
         Signal<E> &signal = Base::get(details::ETag<E>{});
         auto wptr = static_cast<std::weak_ptr<C>>(ptr);
         signal.template add<C, M>(wptr);
@@ -127,7 +127,7 @@ public:
     }
 
     template<class E, class C, void(C::*M)(const E &) = &C::receive>
-    void remove(std::shared_ptr<C> ptr) {
+    void remove(std::shared_ptr<C> &ptr) {
         Signal<E> &signal = Base::get(details::ETag<E>{});
         auto wptr = static_cast<std::weak_ptr<C>>(ptr);
         signal.template remove<C, M>(wptr);

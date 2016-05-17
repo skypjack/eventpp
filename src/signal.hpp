@@ -49,10 +49,15 @@ public:
     }
 
     template<class C, void(C::*M)(const E &)>
-    void add(std::weak_ptr<C> &ptr) {
+    void add(std::weak_ptr<C> ptr) {
         remove<C, M>(ptr);
         Call call = { ptr, &stub<C, M> };
         calls.emplace_back(call);
+    }
+
+    template<class C, void(C::*M)(const E &)>
+    void add(std::shared_ptr<C> &ptr) {
+        add(static_cast<std::weak_ptr<C>>(ptr));
     }
 
     template<void(*F)(const E &)>
@@ -62,8 +67,14 @@ public:
     }
 
     template<class C, void(C::*M)(const E &)>
-    void remove(std::weak_ptr<C> &ptr) {
+    void remove(std::weak_ptr<C> ptr) {
         Call call = { ptr, &stub<C, M> };
+        calls.erase(std::remove(calls.begin(), calls.end(), call), calls.end());
+    }
+
+    template<class C, void(C::*M)(const E &)>
+    void remove(std::shared_ptr<C> &ptr) {
+        Call call = { static_cast<std::weak_ptr<C>>(ptr), &stub<C, M> };
         calls.erase(std::remove(calls.begin(), calls.end(), call), calls.end());
     }
 
