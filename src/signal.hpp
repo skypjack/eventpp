@@ -74,8 +74,7 @@ public:
 
     template<class C, void(C::*M)(const E &)>
     void remove(std::shared_ptr<C> &ptr) {
-        Call call = { static_cast<std::weak_ptr<C>>(ptr), &stub<C, M> };
-        calls.erase(std::remove(calls.begin(), calls.end(), call), calls.end());
+        remove(static_cast<std::weak_ptr<C>>(ptr));
     }
 
     void publish(const E &event) {
