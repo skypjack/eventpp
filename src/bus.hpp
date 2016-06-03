@@ -13,7 +13,9 @@ template<class E>
 struct ETag { using type = E; };
 
 template<int N, int M>
-struct Choice: public Choice<N+1, M> { };
+struct Choice: public Choice<N+1, M> {
+    static_assert(N<M, "!");
+};
 
 template<int N>
 struct Choice<N, N> { };
