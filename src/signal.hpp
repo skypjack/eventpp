@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <utility>
 #include <algorithm>
 
 namespace eventpp {
@@ -21,8 +22,8 @@ class Signal {
     static bool stub(std::weak_ptr<void> &wptr, const E &event) {
         bool ret = false;
 
-        if(!wptr.expired()) {
-            std::shared_ptr<C> ptr = std::static_pointer_cast<C>(wptr.lock());
+        std::shared_ptr<C> ptr = std::static_pointer_cast<C>(wptr.lock());
+        if(ptr) {
             (ptr.get()->*M)(event);
             ret = true;
         }
@@ -34,6 +35,10 @@ class Signal {
         InstanceType instance;
         CallType call;
 
+        Call(InstanceType i, CallType c)
+            : instance{std::move(i)}, call{std::move(c)}
+        { }
+
         bool operator==(const Call &other) const noexcept {
             return instance.lock() == other.instance.lock() &&
                     call == other.call;
@@ -44,20 +49,18 @@ public:
     template<void(*F)(const E &)>
     void add() {
         remove<F>();
-        Call call = { std::weak_ptr<void>{}, &stub<F> };
-        calls.emplace_back(call);
+        calls.emplace_back(std::weak_ptr<void>{}, &stub<F>);
     }
 
     template<class C, void(C::*M)(const E &)>
     void add(std::weak_ptr<C> ptr) {
         remove<C, M>(ptr);
-        Call call = { ptr, &stub<C, M> };
-        calls.emplace_back(call);
+        calls.emplace_back(std::move(ptr), &stub<C, M>);
     }
 
     template<class C, void(C::*M)(const E &)>
-    void add(std::shared_ptr<C> &ptr) {
-        add(static_cast<std::weak_ptr<C>>(ptr));
+    void add(std::shared_ptr<C> ptr) {
+        add(std::weak_ptr<C>{ptr});
     }
 
     template<void(*F)(const E &)>
@@ -68,13 +71,13 @@ public:
 
     template<class C, void(C::*M)(const E &)>
     void remove(std::weak_ptr<C> ptr) {
-        Call call = { ptr, &stub<C, M> };
+        Call call = { std::move(ptr), &stub<C, M> };
         calls.erase(std::remove(calls.begin(), calls.end(), call), calls.end());
     }
 
     template<class C, void(C::*M)(const E &)>
-    void remove(std::shared_ptr<C> &ptr) {
-        remove(static_cast<std::weak_ptr<C>>(ptr));
+    void remove(std::shared_ptr<C> ptr) {
+        remove(std::weak_ptr<C>{ptr});
     }
 
     void publish(const E &event) {

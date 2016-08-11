@@ -60,14 +60,14 @@ protected:
 
     template<class C>
     std::enable_if_t<details::HasReceiveMemberValue<C, E>>
-    reg(details::Choice<S-(sizeof...(O)+1), S>, std::weak_ptr<C> &ptr) {
+    reg(details::Choice<S-(sizeof...(O)+1), S>, std::weak_ptr<C> ptr) {
         signal.template add<C, &C::receive>(ptr);
         Base::reg(details::Choice<S-sizeof...(O), S>{}, ptr);
     }
 
     template<class C>
     std::enable_if_t<details::HasReceiveMemberValue<C, E>>
-    unreg(details::Choice<S-(sizeof...(O)+1), S>, std::weak_ptr<C> &ptr) {
+    unreg(details::Choice<S-(sizeof...(O)+1), S>, std::weak_ptr<C> ptr) {
         signal.template remove<C, &C::receive>(ptr);
         Base::unreg(details::Choice<S-sizeof...(O), S>{}, ptr);
     }
@@ -98,15 +98,13 @@ public:
     using Base::size;
 
     template<class C>
-    void reg(std::shared_ptr<C> &ptr) {
-        auto wptr = static_cast<std::weak_ptr<C>>(ptr);
-        Base::reg(details::Choice<0, sizeof...(T)>{}, wptr);
+    void reg(std::shared_ptr<C> ptr) {
+        Base::reg(details::Choice<0, sizeof...(T)>{}, std::weak_ptr<C>{ptr});
     }
 
     template<class C>
-    void unreg(std::shared_ptr<C> &ptr) {
-        auto wptr = static_cast<std::weak_ptr<C>>(ptr);
-        Base::unreg(details::Choice<0, sizeof...(T)>{}, wptr);
+    void unreg(std::shared_ptr<C> ptr) {
+        Base::unreg(details::Choice<0, sizeof...(T)>{}, std::weak_ptr<C>{ptr});
     }
 
     template<class E, void(*F)(const E &)>
@@ -116,10 +114,9 @@ public:
     }
 
     template<class E, class C, void(C::*M)(const E &) = &C::receive>
-    void add(std::shared_ptr<C> &ptr) {
+    void add(std::shared_ptr<C> ptr) {
         Signal<E> &signal = Base::get(details::ETag<E>{});
-        auto wptr = static_cast<std::weak_ptr<C>>(ptr);
-        signal.template add<C, M>(wptr);
+        signal.template add<C, M>(std::weak_ptr<C>{ptr});
     }
 
     template<class E, void(*F)(const E &)>
@@ -129,10 +126,9 @@ public:
     }
 
     template<class E, class C, void(C::*M)(const E &) = &C::receive>
-    void remove(std::shared_ptr<C> &ptr) {
+    void remove(std::shared_ptr<C> ptr) {
         Signal<E> &signal = Base::get(details::ETag<E>{});
-        auto wptr = static_cast<std::weak_ptr<C>>(ptr);
-        signal.template remove<C, M>(wptr);
+        signal.template remove<C, M>(std::weak_ptr<C>{ptr});
     }
 
     template<class E, class... A>
