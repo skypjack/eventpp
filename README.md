@@ -47,8 +47,8 @@ bus.remove<EventA>(listener);
 bus.add<EventA>(listener);
 
 // functions are accepted citizens as well
-bus.add<EventB, fn>(listener);
-bus.remove<EventB, fn>(listener);
+bus.add<EventB, fn>();
+bus.remove<EventB, fn>();
 
 // finally, events can be emitted with a single command
 bus.publish<EventA>(42);
