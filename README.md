@@ -11,7 +11,7 @@ This is meant as an *event bus*, nothing more.
 
 Here is an example of use:
 
-```
+```cpp
 using namespace eventpp;
 
 struct EventA: public Event<EventA> { EventA(int) { } };
