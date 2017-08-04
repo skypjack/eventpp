@@ -2,7 +2,7 @@
 
 Minimal C++ message system aimed to work as an event bus for the application.
 
-This class is not meant as a drop-in replacement for the `std:function`. That is
+This class is not meant as a drop-in replacement for the `std::function`. That is
 not the purpose of these classes nor the expectation is to get better
 performance.<br/>
 This is meant as an *event bus*, nothing more.
