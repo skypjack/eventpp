@@ -28,8 +28,8 @@ target_include_directories(
 
 target_link_libraries(
     ${TARGET_EVENTPP}
-    PRIVATE ${CMAKE_THREAD_LIBS_INIT}
     PRIVATE ${GOOGLETEST_LIBRARIES}
+    PRIVATE Threads::Threads
 )
 
 add_test(

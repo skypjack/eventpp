@@ -1,3 +1,7 @@
+# Event++ - Minimal C++ message system
+
+[![Build Status](https://travis-ci.org/skypjack/eventpp.svg?branch=master)](https://travis-ci.org/skypjack/eventpp)
+
 ## Synopsis
 
 Minimal C++ message system aimed to work as an event bus for the application.
