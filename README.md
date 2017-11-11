@@ -2,6 +2,19 @@
 
 [![Build Status](https://travis-ci.org/skypjack/eventpp.svg?branch=master)](https://travis-ci.org/skypjack/eventpp)
 
+## Note
+
+This project is no longer maintained.<br/>
+The event handler and much more has conveyed in
+[`EnTT`](https://github.com/skypjack/entt), another project of mine.<br/>
+Please, refer to the [official documentation](https://skypjack.github.io/entt/)
+for more details.
+
+Feel free to keep using `Event++` if you want, but do not expect support or
+new functionalities in future.<br/>
+Otherwise, try to give a chance to [`EnTT`](https://github.com/skypjack/entt)
+and you'll see it will not disappoint you.
+
 ## Synopsis
 
 Minimal C++ message system aimed to work as an event bus for the application.
